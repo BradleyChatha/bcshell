@@ -499,7 +499,10 @@ void findArgAutocomplete()
     {
         auto strings = result.partialMatches.map!(p => p.fullMatchString).array;
         strings.sort!"a.length < b.length";
+
         g_argAutocomplete = strings[min(strings.length-1, g_argAutocompleteOffset)];
+        if(!g_argAutocomplete.startsWith(arg.value))
+            g_argAutocomplete = null;
     }
     else
         g_argAutocomplete = null;
