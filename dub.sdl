@@ -1,0 +1,7 @@
+name "bcshell"
+description "A minimal D application."
+authors "Sealab"
+copyright "Copyright © 2021, Sealab"
+license "proprietary"
+dependency "lumars" version="~>1.0.1"
+dependency "jcli" version="~>0.22.0"

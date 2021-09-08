@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/bcshell
+bcshell.so
+bcshell.dylib
+bcshell.dll
+bcshell.a
+bcshell.lib
+bcshell-test-*
+*.exe
+*.o
+*.obj
+*.lst
