@@ -1,0 +1,22 @@
+name: Publish
+
+on:
+  push:
+    tags: '*'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
+
+    - name: 'Build & Test'
+      run: |
+        dub build --compiler=$DC
+        dub test --compiler=$DC
+        
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: bcshell.exe
