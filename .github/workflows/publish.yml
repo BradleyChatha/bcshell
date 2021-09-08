@@ -12,9 +12,10 @@ jobs:
     - uses: dlang-community/setup-dlang@4c99aa991ce7d19dd3064de0a4f2f6b2f152e2d7
 
     - name: 'Build & Test'
+      shell: powershell
       run: |
-        dub build --compiler=$DC
-        dub test --compiler=$DC
+        dub build --compiler=$env:DC
+        dub test --compiler=$env:DC
         
     - name: Release
       uses: softprops/action-gh-release@v1
