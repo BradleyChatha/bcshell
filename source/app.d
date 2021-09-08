@@ -29,22 +29,26 @@ struct ArgInfo
 
 void main()
 {
-    // Initial setup
-    Console.attach(false);
-    scope(exit) Console.detach();
-    g_resolver = new typeof(g_resolver)();
-    addInternalCommands();
-    readPATH();
-    g_buffer = Console.createTextBuffer();
-    g_inLayout = Layout(Rect(
-        0, Console.screenSize.y-1, Console.screenSize.x, Console.screenSize.y
-    ), Console.screenSize.x, 1);
-
-    // Event loop
-    while(Console.isAttached)
+    version(unittest){}
+    else
     {
-        Console.processEvents((&update).toDelegate);
-        render();
+        // Initial setup
+        Console.attach(false);
+        scope(exit) Console.detach();
+        g_resolver = new typeof(g_resolver)();
+        addInternalCommands();
+        readPATH();
+        g_buffer = Console.createTextBuffer();
+        g_inLayout = Layout(Rect(
+            0, Console.screenSize.y-1, Console.screenSize.x, Console.screenSize.y
+        ), Console.screenSize.x, 1);
+
+        // Event loop
+        while(Console.isAttached)
+        {
+            Console.processEvents((&update).toDelegate);
+            render();
+        }
     }
 }
 
