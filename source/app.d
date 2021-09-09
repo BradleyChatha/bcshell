@@ -358,6 +358,38 @@ void addInternalCommands()
         catch(Exception ex) writeln('\n', ex.msg);
         onChdir();
     }), null);
+
+    g_resolver.add(["ls"], ExeInfo("ls", (_)
+    {
+        try
+        {
+            struct Entry
+            {
+                bool isDir;
+                string path;
+            }
+            Entry[] entries;
+            foreach(entry; dirEntries(getcwd(), SpanMode.shallow))
+                entries ~= Entry(entry.isDir, entry.name.relativePath);
+            entries.sort!"a.path < b.path";
+        
+            if(entries.length)
+            {
+                Appender!(char[]) builder;
+                foreach(entry; entries)
+                {
+                    builder.put(entry.path
+                                    .ansi
+                                    .fg(AnsiColour(entry.isDir ? Ansi4BitColour.brightGreen : Ansi4BitColour.white))
+                                    .toString
+                    );
+                    builder.put('\n');
+                }
+                writeln(builder.data);
+            }
+        }
+        catch(Exception ex){}
+    }), null);
 }
 
 void doExecute(ExeInfo info)
