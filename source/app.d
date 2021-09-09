@@ -14,6 +14,7 @@ Resolver!ExeInfo    g_resolver;                 // Command resolver. This is imp
 ArgInfo[]           g_args;                     // Information about the arguments held within g_inputBuffer.
 string              g_argAutocomplete;          // Suggested autocomplete for current arg.
 size_t              g_argAutocompleteOffset;    // Offset to apply when finding arg autocomplete.
+bool                g_wasInterrupt;             // Signals that there was an interrupted during the last update.
 
 struct ExeInfo
 {
@@ -44,6 +45,7 @@ void main()
         ), Console.screenSize.x, 1);
 
         // Event loop
+        render();
         while(Console.isAttached)
         {
             Console.processEvents((&update).toDelegate);
@@ -54,8 +56,10 @@ void main()
 
 void update(ConsoleEvent event)
 {
+    g_wasInterrupt = false;
     event.match!(
         (ConsoleKeyEvent k) => onKey(k),
+        (ConsoleEventInterrupt _) => onInterrupt(),
         (_) {}
     );
 
@@ -193,7 +197,7 @@ void onKey(ConsoleKeyEvent event)
         tabComplete();
     else if(event.key == ConsoleKey.up)
     {
-        if(event.specialKeys && event.SpecialKey.shift)
+        if(event.specialKeys & event.SpecialKey.shift)
         {
             if(g_argAutocompleteOffset != 0)
                 g_argAutocompleteOffset--;
@@ -206,7 +210,7 @@ void onKey(ConsoleKeyEvent event)
     }
     else if(event.key == ConsoleKey.down)
     {
-        if(event.specialKeys && event.SpecialKey.shift)
+        if(event.specialKeys & event.SpecialKey.shift)
         {
             g_argAutocompleteOffset++;
         }
@@ -368,6 +372,12 @@ void doExecute(ExeInfo info)
         auto slice = pipes.stdout.rawRead(buffer);
         while(slice.length)
         {
+            if(g_wasInterrupt)
+            {
+                kill(pipes.pid);
+                break;
+            }
+
             scope(exit) slice = pipes.stdout.rawRead(buffer);
             stdout.write(slice);
         }
@@ -503,4 +513,9 @@ void findArgAutocomplete()
         if(!g_argAutocomplete.startsWith(arg.value))
             g_argAutocomplete = null;
     }
+}
+
+void onInterrupt()
+{
+    g_wasInterrupt = true;
 }
