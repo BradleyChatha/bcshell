@@ -463,6 +463,8 @@ void findArgAutocomplete()
     size_t _1;
     const arg = currArg(_1);
 
+    g_argAutocomplete = null;
+
     if(arg.value is null)
         return;
 
@@ -501,6 +503,4 @@ void findArgAutocomplete()
         if(!g_argAutocomplete.startsWith(arg.value))
             g_argAutocomplete = null;
     }
-    else
-        g_argAutocomplete = null;
 }
