@@ -294,7 +294,7 @@ uint renderInput()
         TextWidgetBuilder()
             .withBlockArea(Rect((prefix.length + cwd.length).to!int + 2, 0, Console.screenSize.x, 1))
             .withText(cast(string)g_partialCommandMatch)
-            .withStyle(AnsiStyleSet().fg(AnsiColour(Ansi4BitColour.brightWhite)))
+            .withStyle(AnsiStyleSet().fg(AnsiColour(Ansi4BitColour.brightBlack)))
             .build()
             .render(g_inLayout, g_buffer);
     }
@@ -307,7 +307,7 @@ uint renderInput()
         TextWidgetBuilder()
             .withBlockArea(Rect((prefix.length + cwd.length + g_commandSlice.length + arg.start).to!int + 2, 0, Console.screenSize.x, 1))
             .withText(g_argAutocomplete)
-            .withStyle(AnsiStyleSet().fg(AnsiColour(Ansi4BitColour.brightWhite)))
+            .withStyle(AnsiStyleSet().fg(AnsiColour(Ansi4BitColour.brightBlack)))
             .build()
             .render(g_inLayout, g_buffer);
     }
