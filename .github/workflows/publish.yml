@@ -13,7 +13,6 @@ jobs:
       shell: powershell
       run: |
         dub build --compiler=$env:DC
-        dub test --compiler=$env:DC
         
     - name: Release
       uses: softprops/action-gh-release@v1
