@@ -470,16 +470,9 @@ void findArgAutocomplete()
     const path = arg.value.isAbsolute
             ? arg.value
             : buildPath(getcwd(), arg.value);
-
-    // Add local files/folders into the resolver.
-    try
-    {
-        foreach(entry; dirEntries("./", SpanMode.breadth))
-        {
-            resolver.add([entry.name[2..$].replace("\\", "/")], entry.name, null); // 2..$ to skip the first ./
-        }
-    }
-    catch(Exception ex){ }
+    const offset = arg.value.isAbsolute || arg.value == "/"
+            ? 0
+            : getcwd().length + 1; // Skip leading "/"
 
     // Add files/folders relative to the arg, assuming the arg is a path.
     try
@@ -487,12 +480,12 @@ void findArgAutocomplete()
         if(path.exists)
         {
             foreach(entry; dirEntries(path, SpanMode.shallow))
-                resolver.add([entry.name.replace("\\", "/")], entry.name, null);
+                resolver.add([entry.name.replace("\\", "/")[offset..$]], entry.name, null);
         }
         else
         {
             foreach(entry; dirEntries(path.dirName, SpanMode.shallow))
-                resolver.add([entry.name.replace("\\", "/")], entry.name, null);
+                resolver.add([entry.name.replace("\\", "/")[offset..$]], entry.name, null);
         }
     }
     catch(Exception ex){ }
